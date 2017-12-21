@@ -1,17 +1,22 @@
 const fs = require('fs');
 const path = require('path');
 const Sequelize = require('sequelize');
-const config = require('./config/config');
+const config = require('config');
+
+const databaseConfig = config.get('db.database');
+const usernameConfig = config.get('db.username');
+const passwordConfig = config.get('db.password');
+const paramsConfig = config.get('db.params');
 
 let db = null;
 
 module.exports = () => {
   if (!db) {
     db = new Sequelize(
-      config.db.database,
-      config.db.username,
-      config.db.password,
-      config.db.params,
+      databaseConfig,
+      usernameConfig,
+      passwordConfig,
+      paramsConfig,
     );
 
     const dir = path.join(__dirname, 'models/scheme');

@@ -1,10 +1,9 @@
 const nodemailer = require('nodemailer');
-const config = require('../config/config');
-const { path } = require('ramda');
+const config = require('config');
 
-const mailerService = path(['mailer', 'service'], config);
-const mailerName = path(['mailer', 'user'], config);
-const mailerPass = path(['mailer', 'pass'], config);
+const mailerService = config.get('mailer.service');
+const mailerName = config.get('mailer.user');
+const mailerPass = config.get('mailer.pass');
 
 module.exports = nodemailer.createTransport({
   service: mailerService,

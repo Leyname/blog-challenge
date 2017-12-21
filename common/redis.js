@@ -1,10 +1,9 @@
 const Promise = require('bluebird');
 const redis = require('redis-node');
-const config = require('../config/config');
-const { path } = require('ramda');
+const config = require('config');
 
-const redisPort = path(['redis', 'port'], config);
-const redisHost = path(['redis', 'host'], config);
+const redisPort = config.get('redis.port');
+const redisHost = config.get('redis.host');
 
 const redisClient = Promise.promisifyAll(redis.createClient(redisPort, redisHost));
 

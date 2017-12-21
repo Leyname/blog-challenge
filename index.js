@@ -1,10 +1,10 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const config = require('./config/config');
-// const passport = require('./common/auth_strategy');
+const config = require('config');
+const authRoutes = require('./routes/auth');
 require('./db')();
 
-const authRoutes = require('./routes/auth');
+const portConfig = config.get('general.port');
 
 const app = express();
 
@@ -12,8 +12,6 @@ app.use(bodyParser.urlencoded({
   extended: true,
 }));
 app.use(bodyParser.json());
-
-// passport.initialize();
 
 app.use('/api', authRoutes);
 
@@ -27,6 +25,6 @@ app.use('/', (err, req, res, next) => {
   next();
 });
 
-app.listen(config.general.port, () => {
-  console.log(config.general.port);
+app.listen(portConfig, () => {
+  console.log(portConfig);
 });
