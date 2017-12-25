@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const config = require('config');
 const authRoutes = require('./routes/auth');
-require('./db')();
+const db = require('./common/db');
 
 const portConfig = config.get('general.port');
 
@@ -25,6 +25,9 @@ app.use('/', (err, req, res, next) => {
   next();
 });
 
-app.listen(portConfig, () => {
-  console.log(portConfig);
-});
+(async () => {
+  await db.authenticate();
+  app.listen(portConfig, () => {
+    console.log(portConfig);
+  });
+})();

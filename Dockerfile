@@ -9,4 +9,4 @@ COPY . .
 
 EXPOSE 80
 
-CMD npm install bcrypt && npm run dev
+CMD npm run dev
