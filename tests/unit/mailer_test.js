@@ -1,5 +1,0 @@
-describe('Send Email', () => {
-  before(() => {
-    
-  })
-})
