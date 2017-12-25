@@ -10,8 +10,8 @@ const params = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderWithScheme('jwt'),
 };
 
-const strategy = new Strategy(params, (payload, next) => {
-  const user = users.findUserById(payload.id);
+const strategy = new Strategy(params, async (payload, next) => {
+  const user = await users.findUserById(payload.id);
   if (user) {
     next(null, { id: user.id });
   } else {
