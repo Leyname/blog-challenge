@@ -1,23 +1,27 @@
-const users = require('../db')().models.user;
-const bcrypt = require('bcrypt');
+const { models: { User: user } } = require('../common/db');
+const crypto = require('crypto');
 
-const hashingPassword = (password) => {
-  const saltRounds = 10;
-  return bcrypt.hashSync(password, saltRounds);
+const hashingPassword = (password, salt) => {
+  const hashpassword = crypto.createHash('sha512')
+    .update(salt + password, 'utf8')
+    .digest('hex');
+  return hashpassword;
 };
 
 const addNewUser = async (userdata) => {
-  const user = await users.create({
+  const salt = Math.round(`${Date.now() * Math.random()}`);
+  const newUser = await user.create({
     first_name: userdata.first_name,
     last_name: userdata.last_name,
-    password: hashingPassword(userdata.password),
+    password: hashingPassword(userdata.password, salt),
+    salt,
     email: userdata.email,
   });
-  return user.toJSON();
+  return newUser.toJSON();
 };
 
 const confirmUser = id =>
-  users.update({
+  user.update({
     status: true,
   }, {
     where: {
@@ -26,17 +30,17 @@ const confirmUser = id =>
   });
 
 const findUserByEmail = email =>
-  users.findOne({
+  user.findOne({
     where: {
       email,
     },
   });
 
 const findUserById = id =>
-  users.findById(id);
+  user.findById(id);
 
 const changePassword = (email, password) =>
-  users.update({
+  user.update({
     password: hashingPassword(password),
   }, {
     where: {
