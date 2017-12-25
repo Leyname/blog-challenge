@@ -3,26 +3,11 @@ const redisClient = require('../common/redis');
 const config = require('config');
 const randomstring = require('randomstring');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const smtpTransport = require('../common/mailer');
+const crypto = require('crypto');
+const mailer = require('../common/mailer');
 
 const jwtSecret = config.get('jwtAuth.jwtSecret');
 const expireConfig = config.get('redis.expire');
-
-const sendEmail = async (email, link) => {
-  const mailOptions = {
-    to: email,
-    subject: 'Please confirm your Email account',
-    html: `Hello,<br> Please Click on the link to verify your email.<br><a href="${link}">Click here to verify</a>`,
-  };
-
-  await smtpTransport.sendMail(mailOptions, (error) => {
-    if (error) {
-      console.log(error);
-      throw new Error({ success: false, message: 'mail is not send' });
-    }
-  });
-};
 
 const registration = async (req, res, next) => {
   const { id, email } = await users.addNewUser(req.body);
@@ -35,7 +20,7 @@ const registration = async (req, res, next) => {
   const link = `http://${config.general.host}:${config.general.port}/api/auth/confirm/${hashCode}`;
   console.log(link);
 
-  await sendEmail(email, link);
+  await mailer.sendEmail(email, link);
 
   res.data = { success: true };
   next();
@@ -47,7 +32,6 @@ const confirmUser = async (req, res, next) => {
 
   if (!id) {
     throw { success: false, message: 'hashcode is not found' };
-    // Promise.reject({ success: false, message: 'hashcode is not found' });
   }
 
   const affectedCount = await users.confirmUser(id);
@@ -74,7 +58,11 @@ const login = async (req, res, next) => {
       throw { success: false, message: 'email is not confirmed' };
     }
 
-    if (bcrypt.compareSync(password, user.password)) {
+    const hashEnteringPassword = crypto.createHash('sha512')
+      .update(user.salt + password, 'utf8')
+      .digest('hex');
+
+    if (user.password === hashEnteringPassword) {
       const payload = {
         id: user.id,
       };
