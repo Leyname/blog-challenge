@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataType) => {
-  const Article = sequelize.define('article', {
+  const Article = sequelize.define('Article', {
     id: {
       type: DataType.INTEGER,
       primaryKey: true,
@@ -26,20 +26,10 @@ module.exports = (sequelize, DataType) => {
     author_id: {
       type: DataType.INTEGER,
     },
-    created_at: {
-      type: DataType.DATE,
-      allowNull: false,
-      defaultValue: DataType.NOW,
-    },
-    updated_at: {
-      type: DataType.DATE,
-      allowNull: false,
-      defaultValue: DataType.NOW,
-    },
   });
 
   Article.associate = (models) => {
-    Article.belongsTo(models.user, { foreignKey: 'author_id' });
+    Article.belongsTo(models.User, { foreignKey: 'author_id' });
   };
 
   return Article;

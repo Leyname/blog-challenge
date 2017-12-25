@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataType) => {
-  const Tag = sequelize.define('tag', {
+  const Tag = sequelize.define('Tag', {
     id: {
       type: DataType.INTEGER,
       primaryKey: true,
@@ -15,7 +15,7 @@ module.exports = (sequelize, DataType) => {
   });
 
   Tag.associate = (models) => {
-    Tag.hasMany(models.article_tag);
+    Tag.hasMany(models.Article_Tag);
   };
 
   return Tag;
