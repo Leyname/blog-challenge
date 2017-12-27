@@ -13,7 +13,7 @@ const editArticle = async (req, res, next) => {
 
   if (article.author_id === decodedId.id) {
     const affectedCount = await articles.editArticleById(req.body, articleId);
-    console.log(affectedCount);
+
     if (affectedCount[0] > 0) {
       res.data = { success: true };
       return next();
@@ -34,26 +34,16 @@ const addArticle = async (req, res, next) => {
 };
 
 const getPubicArticles = async (req, res, next) => {
-  if ((Object.keys(req.query).length) === 0) {
-    const publicArticles = await articles.getPubicArticles();
-    res.data = publicArticles;
-    next();
-  }
-  const filteringArticles = await articles.filterPublicArticles(req.query);
-  res.data = filteringArticles;
+  const articlesList = await articles.getPublicArticles(req.query);
+  res.data = articlesList;
   next();
 };
 
 const getMyArticles = async (req, res, next) => {
   const token = req.headers.authorization.slice(4);
   const decodedId = await jwt.decode(token);
-  if ((Object.keys(req.query).length) === 0) {
-    const myArticles = await articles.getArticlesByAuthor(decodedId.id);
-    res.data = myArticles;
-    next();
-  }
-  const filteringArticles = await articles.filterArticlesByAuthor(req.query, decodedId.id);
-  res.data = filteringArticles;
+  const articlesList = await articles.getArticlesByAuthor(req.query, decodedId.id);
+  res.data = articlesList;
   next();
 };
 

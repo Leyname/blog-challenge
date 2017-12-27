@@ -1,4 +1,5 @@
 const { models: { Article: article } } = require('../common/db');
+const { Op } = require('sequelize');
 
 const editArticleById = async (articledata, id) =>
   article.update({
@@ -21,22 +22,6 @@ const addNewArticle = async (articledata, authorId) => {
   return newArticle.toJSON();
 };
 
-const getPubicArticles = async () =>
-  article.findAll({
-    where: {
-      status: 'public',
-    },
-    attributes: ['id', 'title', 'text', 'author_id', 'created_at', 'updated_at'],
-  });
-
-const getArticlesByAuthor = async authorId =>
-  article.findAll({
-    where: {
-      author_id: authorId,
-    },
-    attributes: ['id', 'title', 'text', 'status', 'created_at', 'updated_at'],
-  });
-
 const deleteArticleById = async id =>
   article.destroy({
     where: {
@@ -47,7 +32,7 @@ const deleteArticleById = async id =>
 const findArticleById = async id =>
   article.findById(id);
 
-const filterPublicArticles = async (properties) => {
+const getPublicArticles = async (properties) => {
   /*
   Фильтр: articles?skip=0&limit=3&q=Hi!&author=1&sort=updated_at&order=desc
   Пример сформированного параметра для findAll:
@@ -75,15 +60,15 @@ const filterPublicArticles = async (properties) => {
     filter.order = order;
   }
 
+  filter.where = {};
+  filter.where.status = 'public';
+
   if (properties.q !== undefined) {
-    filter.where = {};
-    filter.where.title = properties.q;
+    filter.where.title = {};
+    filter.where.title[Op.like] = `%${properties.q}%`;
   }
 
   if (properties.author !== undefined) {
-    if (filter.where === undefined) {
-      filter.where = {};
-    }
     filter.where.author_id = properties.author;
   }
 
@@ -96,7 +81,7 @@ const filterPublicArticles = async (properties) => {
   return articles;
 };
 
-const filterArticlesByAuthor = async (properties, authorId) => {
+const getArticlesByAuthor = async (properties, authorId) => {
   /*
   Фильтр: my?skip=0&limit=3&q=Hi!&status=public&sort=updated_at&order=desc
   Пример сформированного параметра для findAll:
@@ -128,7 +113,8 @@ const filterArticlesByAuthor = async (properties, authorId) => {
   filter.where.author_id = authorId;
 
   if (properties.q !== undefined) {
-    filter.where.title = properties.q;
+    filter.where.title = {};
+    filter.where.title[Op.like] = `%${properties.q}%`;
   }
 
   if (properties.status !== undefined) {
@@ -147,10 +133,8 @@ const filterArticlesByAuthor = async (properties, authorId) => {
 module.exports = {
   editArticleById,
   addNewArticle,
-  getPubicArticles,
-  getArticlesByAuthor,
   deleteArticleById,
   findArticleById,
-  filterPublicArticles,
-  filterArticlesByAuthor,
+  getPublicArticles,
+  getArticlesByAuthor,
 };
