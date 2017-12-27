@@ -9,7 +9,7 @@ const editArticle = async (req, res, next) => {
 
   const {
     user: {
-      id,
+      id: userId,
     },
   } = req;
 
@@ -22,7 +22,7 @@ const editArticle = async (req, res, next) => {
     };
   }
 
-  if (article.author_id === id) {
+  if (article.author_id === userId) {
     const affectedCount = await articles.editArticleById(req.body, articleId);
 
     if (affectedCount[0] > 0) {
@@ -47,10 +47,10 @@ const editArticle = async (req, res, next) => {
 const addArticle = async (req, res, next) => {
   const {
     user: {
-      id,
+      id: userId,
     },
   } = req;
-  await articles.addNewArticle(req.body, id);
+  await articles.addNewArticle(req.body, userId);
 
   res.data = {
     success: true,
@@ -67,10 +67,10 @@ const getPubicArticles = async (req, res, next) => {
 const getMyArticles = async (req, res, next) => {
   const {
     user: {
-      id,
+      id: userId,
     },
   } = req;
-  const articlesList = await articles.getArticlesByAuthor(req.query, id);
+  const articlesList = await articles.getArticlesByAuthor(req.query, userId);
   res.data = articlesList;
   next();
 };
@@ -83,7 +83,7 @@ const deleteArticles = async (req, res, next) => {
   } = req;
   const {
     user: {
-      id,
+      id: userId,
     },
   } = req;
   const article = await articles.findArticleById(articleId);
@@ -95,7 +95,7 @@ const deleteArticles = async (req, res, next) => {
     };
   }
 
-  if (article.author_id === id) {
+  if (article.author_id === userId) {
     await articles.deleteArticleById(articleId);
     res.data = {
       success: true,
