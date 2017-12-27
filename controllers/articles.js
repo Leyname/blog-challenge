@@ -1,4 +1,5 @@
 const articles = require('../models/article');
+const tagsModel = require('../models/tag');
 const jwt = require('jsonwebtoken');
 
 const editArticle = async (req, res, next) => {
@@ -28,7 +29,20 @@ const editArticle = async (req, res, next) => {
 const addArticle = async (req, res, next) => {
   const token = req.headers.authorization.slice(4);
   const decodedId = await jwt.decode(token);
-  await articles.addNewArticle(req.body, decodedId.id);
+  const { body: { tags } } = req;
+  const { id: articleId } = await articles.addNewArticle(req.body, decodedId.id);
+  if (tags !== undefined) {
+    tags.forEach(async (name) => {
+      const tag = await tagsModel.findTagByName(name);
+      if (tag === null) {
+        const { id: tagId } = await tagsModel.addNewTag(name);
+        await tagsModel.addBindArticleTag(articleId, tagId);
+      } else {
+        await tagsModel.addBindArticleTag(articleId, tag.id);
+      }
+    });
+  }
+
   res.data = { success: true };
   next();
 };
@@ -66,10 +80,24 @@ const deleteArticles = async (req, res, next) => {
   }
 };
 
+const findArticleByTags = async (req, res, next) => {
+  const { query: { tags } } = req;
+  res.data = { success: true };
+  next();
+};
+
+const getTagsCloud = async (req, res, next) => {
+  const tagsCloud = tagsModel.getTagsCloud();
+  res.data = tagsCloud;
+  next();
+};
+
 module.exports = {
   editArticle,
   addArticle,
   getPubicArticles,
   getMyArticles,
   deleteArticles,
+  findArticleByTags,
+  getTagsCloud,
 };

@@ -11,4 +11,7 @@ router.get('/articles', articlesController.getPubicArticles);
 router.get('/my', passport.authenticate('jwt', { session: false }), articlesController.getMyArticles);
 router.delete('/articles/:id', passport.authenticate('jwt', { session: false }), articlesController.deleteArticles);
 
+router.get('/articles?tags=tag1,tag2', articlesController.findArticleByTags);
+router.get('/tags-cloud', articlesController.getTagsCloud);
+
 module.exports = router;
