@@ -1,4 +1,8 @@
-const { models: { User: user } } = require('../common/db');
+const {
+  models: {
+    User: user,
+  },
+} = require('../common/db');
 const crypto = require('crypto');
 
 const hashingPassword = (password, salt) => {

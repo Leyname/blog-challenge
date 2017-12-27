@@ -10,7 +10,10 @@ const jwtSecret = config.get('jwtAuth.jwtSecret');
 const expireConfig = config.get('redis.expire');
 
 const registration = async (req, res, next) => {
-  const { id, email } = await users.addNewUser(req.body);
+  const {
+    id,
+    email,
+  } = await users.addNewUser(req.body);
 
   const hashCode = randomstring.generate();
 
@@ -22,12 +25,18 @@ const registration = async (req, res, next) => {
 
   await mailer.sendEmail(email, link);
 
-  res.data = { success: true };
+  res.data = {
+    success: true,
+  };
   next();
 };
 
 const confirmUser = async (req, res, next) => {
-  const { params: { hash_code: hashCode } } = req;
+  const {
+    params: {
+      hash_code: hashCode,
+    },
+  } = req;
   const id = await redisClient.getAsync(hashCode);
 
   if (!id) {
@@ -42,20 +51,32 @@ const confirmUser = async (req, res, next) => {
     return next();
   }
 
-  throw { success: false, message: 'user is not added' };
+  throw {
+    success: false,
+    message: 'user is not added',
+  };
 };
 
 const login = async (req, res, next) => {
   if (req.body.email && req.body.password) {
-    const { email, password } = req.body;
+    const {
+      email,
+      password,
+    } = req.body;
     const user = await users.findUserByEmail(email);
 
     if (user === null) {
-      throw { success: false, message: 'user is not found' };
+      throw {
+        success: false,
+        message: 'user is not found',
+      };
     }
 
     if (user.status === false) {
-      throw { success: false, message: 'email is not confirmed' };
+      throw {
+        success: false,
+        message: 'email is not confirmed',
+      };
     }
 
     const hashEnteringPassword = crypto.createHash('sha512')
@@ -80,25 +101,37 @@ const login = async (req, res, next) => {
 };
 
 const changePassword = async (req, res, next) => {
-  const { email } = req.body;
+  const {
+    email,
+  } = req.body;
   const hashCode = randomstring.generate();
 
   await redisClient.set(hashCode, email);
   await redisClient.expire(hashCode, expireConfig);
 
   console.log(hashCode);
-  res.data = { success: true };
+  res.data = {
+    success: true,
+  };
 
   next();
 };
 
 const checkCode = async (req, res, next) => {
-  const { params: { code } } = req;
+  const {
+    params: {
+      code,
+    },
+  } = req;
   const email = await redisClient.getAsync(code);
   if (email === null) {
-    res.data = { response: 'this code is not valid' };
+    res.data = {
+      response: 'this code is not valid',
+    };
   } else {
-    res.data = { response: 'this code is valid' };
+    res.data = {
+      response: 'this code is valid',
+    };
   }
   next();
 };
@@ -108,7 +141,10 @@ const reset = async (req, res, next) => {
   const email = await redisClient.getAsync(code);
 
   if (email === null) {
-    throw { success: false, message: 'this code is not valid' };
+    throw {
+      success: false,
+      message: 'this code is not valid',
+    };
   }
 
   const affectedCount = await users.changePassword(email, newPassword);
@@ -118,7 +154,10 @@ const reset = async (req, res, next) => {
     return next();
   }
 
-  throw { success: false, message: 'password is not changed' };
+  throw {
+    success: false,
+    message: 'password is not changed',
+  };
 };
 
 module.exports = {
