@@ -1,4 +1,5 @@
 const articles = require('../models/article');
+const commentaries = require('../models/comment');
 const jwt = require('jsonwebtoken');
 
 const editArticle = async (req, res, next) => {
@@ -76,10 +77,64 @@ const deleteArticles = async (req, res, next) => {
   }
 };
 
+const addComment = async (req, res, next) => {
+  const { params: { id: articleId } } = req;
+  const token = req.headers.authorization.slice(4);
+  const decodedId = await jwt.decode(token);
+  console.log(decodedId);
+  await commentaries.addNewCommentary(req.body.message, articleId, decodedId.id);
+  res.data = { success: true };
+  next();
+};
+
+const getCommentList = async (req, res, next) => {
+  const { params: { id: articleId } } = req;
+
+  const сomments = await commentaries.getCommentaryList(req.query, articleId);
+  res.data = сomments;
+  next();
+};
+
+const getComment = async (req, res, next) => {
+  const { params: { id: commentId } } = req;
+  const comment = await commentaries.getCommentaryById(commentId);
+  res.data = comment;
+  next();
+};
+
+const deleteComment = async (req, res, next) => {
+  const { params: { id: articleId, commentId } } = req;
+  const token = req.headers.authorization.slice(4);
+  const decodedId = await jwt.decode(token);
+  const article = await articles.findArticleById(articleId);
+  const comment = await commentaries.findCommentaryById(commentId);
+
+  if (!article) {
+    throw { success: false, message: 'article is not found' };
+  }
+
+  if (!comment) {
+    throw { success: false, message: 'comment is not found' };
+  }
+
+  if ((comment.author_id === decodedId.id) || (article.author_id === decodedId.id)) {
+    console.log('lia');
+    await commentaries.deleteCommentaryById(commentId);
+    res.data = { success: true };
+    next();
+  } else {
+    throw { success: false, message: 'no rights to delete this commentary' };
+  }
+};
+
 module.exports = {
   editArticle,
   addArticle,
   getPubicArticles,
   getMyArticles,
   deleteArticles,
+  addComment,
+  getCommentList,
+  getComment,
+  deleteComment,
 };

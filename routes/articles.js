@@ -11,4 +11,9 @@ router.get('/articles', articlesController.getPubicArticles);
 router.get('/my', passport.authenticate('jwt', { session: false }), articlesController.getMyArticles);
 router.delete('/articles/:id', passport.authenticate('jwt', { session: false }), articlesController.deleteArticles);
 
+router.post('/articles/:id/comments', passport.authenticate('jwt', { session: false }), articlesController.addComment);
+router.get('/articles/:id/comments', articlesController.getCommentList);
+router.get('/articles/:id/comments/:id', articlesController.getComment);
+router.delete('/articles/:id/comments/:commentId', passport.authenticate('jwt', { session: false }), articlesController.deleteComment);
+
 module.exports = router;
