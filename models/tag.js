@@ -22,7 +22,7 @@ const findTagByName = name =>
       name,
     },
   });
-/*
+
 const getTagsCloud = async () => {
   const tagsCloud = [];
   const tags = tag.findAll();
@@ -42,7 +42,14 @@ const getTagsCloud = async () => {
     post_count: 10,
   };
 };
-*/
+
+const getPostCountTagById = async tagId =>
+  articleTag.count({
+    where: {
+      tag_id: tagId,
+    },
+  });
+
 module.exports = {
   addNewTag,
   addBindArticleTag,

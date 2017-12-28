@@ -81,7 +81,11 @@ const deleteArticles = async (req, res, next) => {
 };
 
 const findArticleByTags = async (req, res, next) => {
-  const { query: { tags } } = req;
+  const {
+    query: {
+      tags,
+    },
+  } = req;
   res.data = { success: true };
   next();
 };
