@@ -5,9 +5,6 @@ const editArticle = async (req, res, next) => {
     params: {
       id: articleId,
     },
-  } = req;
-
-  const {
     user: {
       id: userId,
     },
@@ -18,30 +15,30 @@ const editArticle = async (req, res, next) => {
   if (!article) {
     throw {
       success: false,
-      message: 'article is not found' 
+      message: 'article is not found',
     };
   }
 
-  if (article.author_id === userId) {
-    const affectedCount = await articles.editArticleById(req.body, articleId);
-
-    if (affectedCount[0] > 0) {
-      res.data = {
-        success: true,
-      };
-      return next();
-    }
-
-    throw {
-      success: false,
-      message: 'Editing in not done'
-    };
-  } else {
+  if (article.author_id !== userId) {
     throw {
       success: false,
       message: 'no rights to edit this article',
     };
   }
+
+  const affectedCount = await articles.editArticleById(req.body, articleId);
+
+  if (affectedCount[0] > 0) {
+    res.data = {
+      success: true,
+    };
+    return next();
+  }
+
+  throw {
+    success: false,
+    message: 'Editing is not done',
+  };
 };
 
 const addArticle = async (req, res, next) => {
@@ -80,8 +77,6 @@ const deleteArticles = async (req, res, next) => {
     params: {
       id: articleId,
     },
-  } = req;
-  const {
     user: {
       id: userId,
     },

@@ -33,16 +33,6 @@ const findArticleById = async id =>
   article.findById(id);
 
 const getPublicArticles = async (properties) => {
-  /*
-  Фильтр: articles?skip=0&limit=3&q=Hi!&author=1&sort=updated_at&order=desc
-  Пример сформированного параметра для findAll:
-  { offset: '0',
-    limit: '3',
-    order: [ [ 'updated_at', 'asc' ] ],
-    where: { title: 'Hi!', author_id: '1' },
-    attributes: [ 'id', 'title', 'text', 'author_id', 'created_at', 'updated_at' ] }
-  */
-
   const filter = {};
   if (properties.skip !== undefined) {
     filter.offset = properties.skip;
@@ -82,16 +72,6 @@ const getPublicArticles = async (properties) => {
 };
 
 const getArticlesByAuthor = async (properties, authorId) => {
-  /*
-  Фильтр: my?skip=0&limit=3&q=Hi!&status=public&sort=updated_at&order=desc
-  Пример сформированного параметра для findAll:
-  { offset: '0',
-    limit: '3',
-    order: [ [ 'updated_at', 'desc' ] ],
-    where: { author_id: 1, title: 'Hi!', status: 'public' },
-    attributes: [ 'id', 'title', 'text', 'author_id', 'created_at', 'updated_at' ] }
-  */
-
   const filter = {};
   if (properties.skip !== undefined) {
     filter.offset = properties.skip;
