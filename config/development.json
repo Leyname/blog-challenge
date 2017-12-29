@@ -9,14 +9,15 @@
     "password": "root",
     "params": {
       "dialect": "postgres",
-      "host": "docker.for.mac.localhost",
+      "host": "postgres",
+      "logging": false,
       "define": {
         "underscored": true
       }
     }
   },
   "redis": {
-    "host": "docker.for.mac.localhost",
+    "host": "redis",
     "port": 6379,
     "expire": 86400
   },

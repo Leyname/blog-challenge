@@ -31,3 +31,5 @@ app.use('/', (err, req, res, next) => {
     console.log(portConfig);
   });
 })();
+
+module.exports = app;

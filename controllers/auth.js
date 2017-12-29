@@ -53,7 +53,7 @@ const confirmUser = async (req, res, next) => {
 
   throw {
     success: false,
-    message: 'user is not added',
+    message: 'user is not confirmed',
   };
 };
 

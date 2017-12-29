@@ -52,10 +52,18 @@ const changePassword = (email, password) =>
     },
   });
 
+const deleteUserByEmail = email =>
+  user.destroy({
+    where: {
+      email,
+    },
+  });
+
 module.exports = {
   addNewUser,
   confirmUser,
   findUserByEmail,
   findUserById,
   changePassword,
+  deleteUserByEmail,
 };
