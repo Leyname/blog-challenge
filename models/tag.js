@@ -37,13 +37,13 @@ const getPostCountTagById = async tagId =>
 const getTagsCloud = async () => {
   const tagsCloud = [];
   const tags = Tag.findAll();
-
+/*
   tags.forEach((tag) => {
-    tagsCloud[tag] = {
+    tagsCloud[] = {
       tag: tag.name,
       post_count: getPostCountTagById(tag.id),
     };
-  });
+  }); */
 };
 
 module.exports = {
