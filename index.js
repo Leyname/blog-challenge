@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const config = require('config');
 const authRoutes = require('./routes/auth');
+const articleRoutes = require('./routes/articles');
 const db = require('./common/db');
 
 const portConfig = config.get('general.port');
@@ -14,6 +15,8 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.use('/api', authRoutes);
+
+app.use('/api', articleRoutes);
 
 app.use('/', (req, res, next) => {
   res.json(res.data);
