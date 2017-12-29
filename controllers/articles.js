@@ -20,7 +20,7 @@ const editArticle = async (req, res, next) => {
       return next();
     }
 
-    throw { success: false, message: 'Editing in not done' };
+    throw { success: false, message: 'Editing is not done' };
   } else {
     throw { success: false, message: 'no rights to edit this article' };
   }
