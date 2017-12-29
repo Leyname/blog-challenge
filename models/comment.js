@@ -9,29 +9,8 @@ const addNewCommentary = async (message, articleId, authorId) => {
   });
   return newArticle.toJSON();
 };
-/*
-const getCommentarytList = async articleId =>
-  commentary.findAll({
-    where: {
-      post_id: articleId,
-    },
-    attributes: ['id', 'message', 'post_id', 'author_id', 'created_at', 'updated_at'],
-  }); */
 
 const getCommentaryList = async (properties, articleId) => {
-/*
-  Фильтр: comments?skip=0&limit=3&message=ha&author=1&sort=updated_at&order=desc
-  Пример сформированного параметра для findAll:
-  { offset: '0',
-    limit: '3',
-    order: [ [ 'updated_at', 'asc' ] ],
-    where:
-    { post_id: '8',
-    message: { [Symbol(like)]: '%ha%' },
-    author_id: '1' },
-    attributes: [ 'id', 'message', 'author_id', 'created_at', 'updated_at' ] }
-  */
-
   const filter = {};
   if (properties.skip !== undefined) {
     filter.offset = properties.skip;
